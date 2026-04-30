@@ -1,11 +1,24 @@
 package com.restaurante.pos.venta.service;
 
+import com.restaurante.pos.cliente.entity.Cliente;
+import com.restaurante.pos.cliente.repository.ClienteRepository;
+import com.restaurante.pos.inventario.service.InventarioService;
+import com.restaurante.pos.producto.entity.Producto;
+import com.restaurante.pos.producto.repository.ProductoRepository;
+import com.restaurante.pos.usuario.entity.Usuario;
+import com.restaurante.pos.usuario.repository.UsuarioRepository;
+import com.restaurante.pos.venta.dto.CrearVentaDTO;
+import com.restaurante.pos.venta.dto.CrearDetalleVentaDTO;
+import com.restaurante.pos.venta.entity.DetalleVenta;
 import com.restaurante.pos.venta.entity.Venta;
+import com.restaurante.pos.venta.repository.DetalleVentaRepository;
 import com.restaurante.pos.venta.repository.VentaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -45,6 +58,12 @@ public class VentaService {
 
     /** Repositorio para acceder al historial de ventas. */
     private final VentaRepository ventaRepository;
+    private final DetalleVentaRepository detalleVentaRepository;
+
+    private final ProductoRepository productoRepository;
+    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final InventarioService inventarioService;
 
     // ============================================
     // OPERACIONES DE CONSULTA BÁSICA
@@ -187,5 +206,117 @@ public class VentaService {
             venta.setEstado("ANULADA");
             ventaRepository.save(venta);
         }
+    }
+
+    /**
+     * CREAR VENTA DIRECTA (POS / Para llevar / Delivery)
+     * --------------------------------------------------
+     * Crea una venta sin pasar por el módulo de mesas.
+     * Utilizado por la interfaz de cajero (POS) para ventas rápidas.
+     *
+     * FLUJO:
+     * 1. Valida vendedor y productos.
+     * 2. Crea los detalles de venta con precios actuales.
+     * 3. Calcula totales (subtotal, impuestos, total).
+     * 4. Guarda la venta.
+     * 5. Descuenta stock del inventario por cada producto vendido.
+     *
+     * @param dto Datos de la venta directa.
+     * @return La venta creada y persistida.
+     */
+    @Transactional
+    public Venta crearVentaDirecta(CrearVentaDTO dto) {
+        // Validar vendedor
+        Usuario vendedor = usuarioRepository.findById(dto.getVendedorId())
+                .orElseThrow(() -> new RuntimeException("Vendedor no encontrado"));
+
+        // Crear la venta base
+        Venta venta = new Venta();
+        venta.setFecha(LocalDate.now());
+        venta.setHora(LocalDateTime.now());
+        venta.setTipoVenta(dto.getTipoVenta() != null ? dto.getTipoVenta() : "LLEVAR");
+        venta.setTipoComprobante(dto.getTipoComprobante() != null ? dto.getTipoComprobante() : "TICKET");
+        venta.setEstado("COMPLETADA");
+        venta.setMetodoPago(dto.getMetodoPago() != null ? dto.getMetodoPago() : "EFECTIVO");
+        venta.setDescuento(dto.getDescuento() != null ? dto.getDescuento() : BigDecimal.ZERO);
+        venta.setMontoRecibido(dto.getMontoRecibido() != null ? dto.getMontoRecibido() : BigDecimal.ZERO);
+        venta.setVendedor(vendedor);
+        venta.setObservaciones(dto.getObservaciones());
+        venta.setDireccionEntrega(dto.getDireccionEntrega());
+        venta.setTelefonoContacto(dto.getTelefonoContacto());
+
+        // Cliente opcional
+        if (dto.getClienteId() != null) {
+            Cliente cliente = clienteRepository.findById(dto.getClienteId())
+                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+            venta.setCliente(cliente);
+        }
+
+        // Crear detalles
+        List<DetalleVenta> detalles = new ArrayList<>();
+        for (CrearDetalleVentaDTO detalleDTO : dto.getDetalles()) {
+            Producto producto = productoRepository.findById(detalleDTO.getProductoId())
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + detalleDTO.getProductoId()));
+
+            if (!producto.getActivo()) {
+                throw new RuntimeException("El producto no está disponible: " + producto.getNombre());
+            }
+
+            DetalleVenta detalle = new DetalleVenta();
+            detalle.setProducto(producto);
+            detalle.setCantidad(detalleDTO.getCantidad());
+            detalle.setPrecioUnitario(producto.getPrecio());
+            detalle.setDescuento(detalleDTO.getDescuento() != null ? detalleDTO.getDescuento() : BigDecimal.ZERO);
+            detalle.setNotas(detalleDTO.getNotas());
+            detalle.calcularSubtotal();
+            detalle.setVenta(venta);
+            detalles.add(detalle);
+        }
+        venta.setDetalles(detalles);
+
+        // Calcular totales
+        venta.calcularTotales();
+
+        // Calcular vuelto si es efectivo
+        if ("EFECTIVO".equals(venta.getMetodoPago()) && venta.getMontoRecibido() != null) {
+            BigDecimal vuelto = venta.getMontoRecibido().subtract(venta.getTotal());
+            venta.setVuelto(vuelto.compareTo(BigDecimal.ZERO) > 0 ? vuelto : BigDecimal.ZERO);
+        } else {
+            venta.setVuelto(BigDecimal.ZERO);
+        }
+
+        // Guardar venta
+        venta = ventaRepository.save(venta);
+
+        // Descontar inventario
+        for (DetalleVenta detalle : venta.getDetalles()) {
+            inventarioService.registrarSalidaVenta(
+                    detalle.getProducto().getId(),
+                    detalle.getCantidad(),
+                    venta.getId(),
+                    vendedor.getId()
+            );
+        }
+
+        return venta;
+    }
+
+    @Transactional
+    public DetalleVenta actualizarEstadoPreparacion(Long detalleId, String estado) {
+        DetalleVenta detalle = detalleVentaRepository.findById(detalleId)
+                .orElseThrow(() -> new RuntimeException("Detalle de venta no encontrado"));
+
+        List<String> estadosValidos = List.of("PENDIENTE", "EN_PREPARACION", "LISTO", "ENTREGADO");
+        if (!estadosValidos.contains(estado)) {
+            throw new RuntimeException("Estado de preparacion invalido. Estados permitidos: " + estadosValidos);
+        }
+
+        detalle.setEstadoPreparacion(estado);
+        return detalleVentaRepository.save(detalle);
+    }
+
+    @Transactional(readOnly = true)
+    public List<DetalleVenta> obtenerDetallesPorEstadoPreparacion(String estado) {
+        return detalleVentaRepository.findByEstadoPreparacion(estado);
     }
 }

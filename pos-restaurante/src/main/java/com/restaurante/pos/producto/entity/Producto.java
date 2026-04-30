@@ -109,7 +109,7 @@ public class Producto extends BaseEntity {
         if (costo == null || costo.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
-        return precio.subtract(costo).divide(costo, 4, BigDecimal.ROUND_HALF_UP)
+        return precio.subtract(costo).divide(costo, 4, java.math.RoundingMode.HALF_UP)
                 .multiply(new BigDecimal("100"));
     }
 }

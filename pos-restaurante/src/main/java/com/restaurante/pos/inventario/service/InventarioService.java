@@ -522,7 +522,7 @@ public class InventarioService {
 
         if (nuevaCantidad > 0) {
             BigDecimal nuevoPrecioPromedio = valorActual.add(valorNuevo)
-                    .divide(new BigDecimal(nuevaCantidad), 2, BigDecimal.ROUND_HALF_UP);
+                    .divide(new BigDecimal(nuevaCantidad), 2, java.math.RoundingMode.HALF_UP);
             inventario.setPrecioPromedio(nuevoPrecioPromedio);
         }
 

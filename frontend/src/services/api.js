@@ -101,6 +101,10 @@ export const inventarioService = {
   create: (data) => api.post('/inventario', data).then(res => res.data),
   update: (id, data) => api.put(`/inventario/${id}`, data).then(res => res.data),
   delete: (id) => api.delete(`/inventario/${id}`),
+  ajuste: (id, data) => api.post(`/inventario/${id}/ajuste`, data).then(res => res.data),
+  inicializar: (productoId) => api.post(`/inventario/inicializar/${productoId}`).then(res => res.data),
+  getMovimientos: () => api.get('/inventario/movimientos').then(res => res.data),
+  getMovimientosPorProducto: (productoId) => api.get(`/inventario/movimientos/producto/${productoId}`).then(res => res.data),
 };
 
 // MESAS
@@ -144,6 +148,7 @@ export const proveedorService = {
 export const ventaService = {
   getAll: () => api.get('/ventas').then(res => res.data),
   getById: (id) => api.get(`/ventas/${id}`).then(res => res.data),
+  create: (data) => api.post('/ventas/directa', data).then(res => res.data),
   buscar: (params) => api.get(`/ventas/buscar?${params}`).then(res => res.data),
   getByFecha: (inicio, fin) => api.get(`/ventas/fecha?inicio=${inicio}&fin=${fin}`).then(res => res.data),
   getEstadisticas: (inicio, fin) => api.get(`/ventas/estadisticas?inicio=${inicio}&fin=${fin}`).then(res => res.data),

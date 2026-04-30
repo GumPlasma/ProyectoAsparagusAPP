@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import logo from '../assets/AsparagusAPP_logo.png';
 import './LoginPage.css';
 
@@ -9,6 +9,7 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,17 +17,12 @@ function LoginPage() {
     setError('');
 
     try {
-      const response = await authService.login(credentials);
-
-      // Guardar directamente en localStorage
-      localStorage.setItem('user', JSON.stringify(response));
-      localStorage.setItem('token', 'dev-token-' + response.id);
-
-      // Redirigir
-      navigate('/');
-
-      // Recargar para actualizar el estado
-      window.location.reload();
+      const success = await login(credentials.username, credentials.password);
+      if (success) {
+        navigate('/', { replace: true });
+      } else {
+        setError('Credenciales incorrectas');
+      }
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Error al iniciar sesión');
     } finally {

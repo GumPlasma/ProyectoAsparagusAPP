@@ -29,11 +29,17 @@ function Layout() {
             <Nav.Link as={Link} to="/" active={isActive('/')}>
               📊 Dashboard
             </Nav.Link>
+            <Nav.Link as={Link} to="/pos" active={isActive('/pos')}>
+              🧾 POS
+            </Nav.Link>
             <Nav.Link as={Link} to="/mesas" active={isActive('/mesas')}>
               🪑 Mesas
             </Nav.Link>
             <Nav.Link as={Link} to="/productos" active={isActive('/productos')}>
               📦 Productos
+            </Nav.Link>
+            <Nav.Link as={Link} to="/inventario" active={isActive('/inventario')}>
+              📊 Inventario
             </Nav.Link>
             <Nav.Link as={Link} to="/clientes" active={isActive('/clientes')}>
               👥 Clientes

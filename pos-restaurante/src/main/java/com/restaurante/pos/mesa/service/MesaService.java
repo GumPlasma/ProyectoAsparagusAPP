@@ -8,6 +8,7 @@ import com.restaurante.pos.venta.entity.DetalleVenta;
 import com.restaurante.pos.venta.repository.VentaRepository;
 import com.restaurante.pos.producto.repository.ProductoRepository;
 import com.restaurante.pos.producto.entity.Producto;
+import com.restaurante.pos.inventario.service.InventarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +61,9 @@ public class MesaService {
 
     /** Repositorio para persistir las ventas generadas al pagar una mesa. */
     private final VentaRepository ventaRepository;
+
+    /** Servicio de inventario para descontar stock al procesar ventas. */
+    private final InventarioService inventarioService;
 
     // ============================================
     // OPERACIONES DE CONSULTA (READ-ONLY)
@@ -380,6 +384,18 @@ public class MesaService {
 
         // Persistir la venta completa (cascade guarda también los detalles).
         venta = ventaRepository.save(venta);
+
+        // ========== DESCONTAR STOCK DEL INVENTARIO ==========
+        // Por cada detalle vendido, registrar la salida de inventario.
+        Long vendedorId = venta.getVendedor() != null ? venta.getVendedor().getId() : null;
+        for (DetalleVenta detalle : venta.getDetalles()) {
+            inventarioService.registrarSalidaVenta(
+                    detalle.getProducto().getId(),
+                    detalle.getCantidad(),
+                    venta.getId(),
+                    vendedorId
+            );
+        }
 
         // ========== LIMPIAR LA MESA PARA LA PRÓXIMA ATENCIÓN ==========
         pedidoMesaRepository.deleteByMesaId(mesa.getId());

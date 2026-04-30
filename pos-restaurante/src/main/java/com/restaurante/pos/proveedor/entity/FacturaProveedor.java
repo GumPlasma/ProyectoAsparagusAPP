@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +119,7 @@ public class FacturaProveedor extends BaseEntity {
             subtotal = subtotal.add(detalle.getSubtotal());
         }
         montoImpuesto = subtotal.multiply(porcentajeImpuesto)
-                .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
+                .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
         total = subtotal.add(montoImpuesto);
     }
 }

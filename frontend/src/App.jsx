@@ -9,6 +9,10 @@ import ClientesPage from './pages/ClientesPage';
 import ProveedoresPage from './pages/ProveedoresPage';
 import VentasPage from './pages/VentasPage';
 import UsuariosPage from './pages/UsuariosPage';
+import POSPage from './pages/POSPage';
+import InventarioPage from './pages/InventarioPage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -44,9 +48,12 @@ function AppRoutes() {
           <Route path="/proveedores" element={<PrivateRoute><ProveedoresPage /></PrivateRoute>} />
           <Route path="/ventas" element={<PrivateRoute><VentasPage /></PrivateRoute>} />
           <Route path="/usuarios" element={<PrivateRoute><UsuariosPage /></PrivateRoute>} />
+          <Route path="/pos" element={<PrivateRoute><POSPage /></PrivateRoute>} />
+          <Route path="/inventario" element={<PrivateRoute><InventarioPage /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
 }

@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
       setError(null);
       
       // Llamar a la API de autenticación
-      const usuario = await authService.login(username, password);
+      const usuario = await authService.login({ username, password });
       
       // Guardar en localStorage
       localStorage.setItem('token', 'dev-token-' + usuario.id);

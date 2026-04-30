@@ -18,9 +18,12 @@ function MesasPage() {
   // Drag & Drop state
   const [draggedMesa, setDraggedMesa] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [hasMoved, setHasMoved] = useState(false);
   const dragStartPos = useRef({ x: 0, y: 0 });
   const mesasMapRef = useRef(null);
+  // Refs síncronas para evitar problemas de stale state y batching de React
+  const draggedMesaRef = useRef(null);
+  const draggedPosRef = useRef({ x: 0, y: 0 });
+  const hasMovedRef = useRef(false);
 
   useEffect(() => { cargarDatos(); }, []);
 
@@ -155,58 +158,80 @@ function MesasPage() {
   // Funciones de Drag & Drop
   const handleMouseDown = (e, mesa) => {
     if (e.target.closest('.mesa-actions') || e.target.closest('.btn')) return;
+    e.preventDefault(); // Prevenir selección de texto durante drag
 
     const rect = e.currentTarget.getBoundingClientRect();
     setDraggedMesa(mesa);
+    draggedMesaRef.current = mesa;
     setDragOffset({
       x: e.clientX - rect.left,
       y: e.clientY - rect.top
     });
-    setHasMoved(false);
+    hasMovedRef.current = false;
     dragStartPos.current = { x: e.clientX, y: e.clientY };
+    draggedPosRef.current = { x: mesa.posicionX || 100, y: mesa.posicionY || 100 };
+
+    // Agregar listeners globales para capturar mousemove/mouseup fuera del contenedor
+    window.addEventListener('mousemove', handleWindowMouseMove);
+    window.addEventListener('mouseup', handleWindowMouseUp);
   };
 
-  const handleMouseMove = (e) => {
-    if (!draggedMesa || !mesasMapRef.current) return;
+  const handleWindowMouseMove = (e) => {
+    if (!draggedMesaRef.current || !mesasMapRef.current) return;
 
     // Detectar si hubo movimiento significativo (más de 5px)
     const dx = Math.abs(e.clientX - dragStartPos.current.x);
     const dy = Math.abs(e.clientY - dragStartPos.current.y);
     if (dx > 5 || dy > 5) {
-      setHasMoved(true);
+      hasMovedRef.current = true;
     }
 
     const containerRect = mesasMapRef.current.getBoundingClientRect();
     const newX = Math.max(0, Math.min(e.clientX - containerRect.left - dragOffset.x, containerRect.width - 120));
     const newY = Math.max(0, Math.min(e.clientY - containerRect.top - dragOffset.y, containerRect.height - 120));
 
+    // Guardar en ref para tener acceso síncrono a la última posición
+    draggedPosRef.current = { x: Math.round(newX), y: Math.round(newY) };
+
     setMesas(prevMesas =>
       prevMesas.map(m =>
-        m.id === draggedMesa.id
-          ? { ...m, posicionX: newX, posicionY: newY }
+        m.id === draggedMesaRef.current.id
+          ? { ...m, posicionX: Math.round(newX), posicionY: Math.round(newY) }
           : m
       )
     );
   };
 
-  const handleMouseUp = async () => {
-    if (draggedMesa && hasMoved) {
-      const mesa = mesas.find(m => m.id === draggedMesa.id);
-      if (mesa) {
-        try {
-          await mesaService.updatePosicion(mesa.id, mesa.posicionX, mesa.posicionY);
-        } catch (error) {
-          console.error('Error al guardar posición:', error);
-        }
+  const handleWindowMouseUp = async () => {
+    // Remover listeners globales
+    window.removeEventListener('mousemove', handleWindowMouseMove);
+    window.removeEventListener('mouseup', handleWindowMouseUp);
+
+    const mesaArrastrada = draggedMesaRef.current;
+    const seMovio = hasMovedRef.current;
+
+    if (mesaArrastrada && seMovio) {
+      const { x, y } = draggedPosRef.current;
+      try {
+        await mesaService.updatePosicion(mesaArrastrada.id, x, y);
+        // Recargar mesas para sincronizar estado con el servidor
+        const mesasActualizadas = await mesaService.getAll();
+        setMesas(mesasActualizadas);
+      } catch (error) {
+        console.error('Error al guardar posición:', error);
+        // En caso de error, recargar para restaurar posiciones del servidor
+        cargarDatos();
       }
     }
+
     setDraggedMesa(null);
-    setHasMoved(false);
+    draggedMesaRef.current = null;
+    hasMovedRef.current = false;
   };
 
   const handleMesaClick = async (mesa) => {
     // No hacer click si se estaba arrastrando
-    if (hasMoved) return;
+    if (hasMovedRef.current) return;
 
     if (mesa.estado === 'LIBRE') {
       try {
@@ -258,9 +283,6 @@ function MesasPage() {
       <div
         className="mesas-map"
         ref={mesasMapRef}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
       >
         {mesas.length === 0 ? (
           <div className="text-center text-muted py-5"><h4>No hay mesas</h4><p>Haz clic en "Nueva Mesa"</p></div>
