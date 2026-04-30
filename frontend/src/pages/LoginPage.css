@@ -1,0 +1,196 @@
+/* COLORES CORPORATIVOS AS PARAGUSAPP
+   - Primario (Verde Oscuro): #274002
+   - Secundario (Verde Medio): #7D8C07
+   - Acento (Verde Claro): #ADBF21
+   - Destacado (Naranja): #F27F1B
+   - Fondo (Gris Claro): #F2F2F2
+*/
+
+/* CONTENEDOR PRINCIPAL */
+.login-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* SECCIÓN DE BRANDING (IZQUIERDA) */
+.login-branding {
+  flex: 1;
+  background: linear-gradient(135deg, #274002 0%, #3d5a08 50%, #7D8C07 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: white;
+}
+
+.branding-content {
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.branding-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #ADBF21;
+}
+
+.branding-content p {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+}
+
+.features-list li {
+  padding: 0.75rem 0;
+  font-size: 1.1rem;
+  opacity: 0.95;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.features-list li:last-child {
+  border-bottom: none;
+}
+
+/* SECCIÓN DEL FORMULARIO (DERECHA) */
+.login-form-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #F2F2F2;
+}
+
+.login-form-wrapper {
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(39, 64, 2, 0.1);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-logo-small {
+  width: 80px;
+  height: auto;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
+
+.login-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #274002;
+  margin-bottom: 0.5rem;
+}
+
+.login-header p {
+  color: #666;
+}
+
+/* FORMULARIO */
+.login-form-wrapper .form-control {
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.login-form-wrapper .form-control:focus {
+  border-color: #ADBF21;
+  box-shadow: 0 0 0 4px rgba(173, 191, 33, 0.15);
+}
+
+.login-form-wrapper .form-label {
+  color: #274002;
+  font-weight: 500;
+}
+
+.login-form-wrapper .btn-primary {
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #274002 0%, #7D8C07 100%);
+  border: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 0.5rem;
+}
+
+.login-form-wrapper .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(39, 64, 2, 0.3);
+}
+
+.login-form-wrapper .btn-primary:disabled {
+  transform: none;
+  opacity: 0.7;
+}
+
+/* ALERTAS */
+.login-form-wrapper .alert {
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  border: none;
+}
+
+.login-form-wrapper .alert-danger {
+  background-color: rgba(242, 127, 27, 0.1);
+  color: #8B4513;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .login-branding {
+    padding: 1.5rem;
+  }
+
+  .branding-content h1 {
+    font-size: 2rem;
+  }
+
+  .login-logo {
+    width: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-branding {
+    display: none;
+  }
+
+  .login-form-container {
+    padding: 1rem;
+    background: linear-gradient(135deg, #274002 0%, #7D8C07 100%);
+  }
+
+  .login-form-wrapper {
+    padding: 2rem;
+  }
+}

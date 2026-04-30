@@ -1,0 +1,60 @@
+# ==========================================
+# CONFIGURACIÓN PRINCIPAL
+# ==========================================
+# ==========================================
+# CONFIGURACIÓN DEL SERVIDOR
+# ==========================================
+server:
+  port: 8080                           # Puerto donde corre la aplicación
+  servlet:
+    context-path: /api                 # Prefijo para todas las URLs
+
+# ==========================================
+# CONFIGURACIÓN DE SPRING
+# ==========================================
+spring:
+  application:
+    name: pos-restaurante # Nombre de la aplicación
+  profiles:
+    active: sqlserver
+  
+  # ====== FUENTE DE DATOS (H2 - DESARROLLO) ======
+  datasource:
+    url: jdbc:h2:mem:pos_restaurante   # Base de datos en memoria
+    driver-class-name: org.h2.Driver   # Driver de H2
+    username: sa                       # Usuario por defecto H2
+    password:                          # Sin contraseña
+  
+  # ====== JPA / HIBERNATE ======
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop            # Crea y destruye tablas automáticamente
+    show-sql: true                     # Muestra SQL en consola
+    properties:
+      hibernate:
+        format_sql: true               # Formatea el SQL para mejor lectura
+  
+  # ====== CONSOLA H2 ======
+  h2:
+    console:
+      enabled: true                    # Habilita consola web de H2
+      path: /h2-console                # URL de la consola
+
+# ==========================================
+# CONFIGURACIÓN DE DOCUMENTACIÓN API
+# ==========================================
+springdoc:
+  api-docs:
+    path: /api-docs                    # URL de la documentación JSON
+  swagger-ui:
+    path: /swagger-ui.html             # URL de Swagger UI
+    enabled: true
+
+# ==========================================
+# LOGGING
+# ==========================================
+logging:
+  level:
+    com.restaurante: DEBUG             # Nivel de log para nuestros paquetes
+    org.hibernate.SQL: DEBUG           # Muestra SQL de Hibernate

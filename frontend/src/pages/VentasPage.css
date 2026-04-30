@@ -1,0 +1,226 @@
+/* COLORES CORPORATIVOS AS PARAGUSAPP */
+
+.ventas-container {
+  padding: 20px;
+}
+
+.ventas-header h2 {
+  margin: 0;
+  color: #274002;
+}
+
+.estadisticas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 3px 15px rgba(39, 64, 2, 0.1);
+  border-left: 4px solid #ADBF21;
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  color: #7D8C07;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #274002;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.stat-total {
+  border-left-color: #ADBF21;
+}
+
+.stat-total .stat-icon {
+  color: #ADBF21;
+}
+
+.stat-propinas {
+  border-left-color: #F27F1B;
+}
+
+.stat-propinas .stat-icon {
+  color: #F27F1B;
+}
+
+.stat-cantidad {
+  border-left-color: #7D8C07;
+}
+
+.stat-cantidad .stat-icon {
+  color: #7D8C07;
+}
+
+.stat-promedio {
+  border-left-color: #274002;
+}
+
+.stat-promedio .stat-icon {
+  color: #274002;
+}
+
+.filtros-section {
+  background: #F2F2F2;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.filtros-section h5 {
+  margin-bottom: 15px;
+  color: #274002;
+}
+
+.filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  align-items: end;
+}
+
+.filtro-item label {
+  font-size: 0.85rem;
+  color: #274002;
+  margin-bottom: 5px;
+  display: block;
+  font-weight: 500;
+}
+
+.filtro-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.filtro-buttons .btn-primary {
+  background: linear-gradient(135deg, #274002 0%, #7D8C07 100%);
+  border: none;
+}
+
+.filtro-buttons .btn-outline-secondary {
+  border-color: #7D8C07;
+  color: #7D8C07;
+}
+
+.filtro-buttons .btn-outline-secondary:hover {
+  background: #7D8C07;
+  color: white;
+}
+
+.metodo-pago {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.metodo-efectivo {
+  background: rgba(173, 191, 33, 0.2);
+  color: #274002;
+}
+
+.metodo-tarjeta {
+  background: rgba(125, 140, 7, 0.2);
+  color: #274002;
+}
+
+.metodo-transferencia {
+  background: rgba(242, 127, 27, 0.2);
+  color: #8B4513;
+}
+
+.venta-info {
+  background: #F2F2F2;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.venta-totales {
+  background: #fff;
+  border: 2px solid #ADBF21;
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.total-row.propina {
+  color: #F27F1B;
+  font-weight: 600;
+}
+
+.total-row.total-final {
+  font-size: 1.3rem;
+  font-weight: bold;
+  border-top: 2px solid #ADBF21;
+  padding-top: 12px;
+  margin-top: 8px;
+  color: #274002;
+}
+
+.total-row.cambio {
+  color: #7D8C07;
+  font-weight: 600;
+}
+
+.table th {
+  background: rgba(173, 191, 33, 0.1);
+  color: #274002;
+  border-bottom: 2px solid #ADBF21;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #ADBF21;
+  box-shadow: 0 0 0 3px rgba(173, 191, 33, 0.15);
+}
+
+@media (max-width: 768px) {
+  .estadisticas-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filtros-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtro-buttons {
+    flex-direction: column;
+  }
+}

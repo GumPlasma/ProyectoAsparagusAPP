@@ -1,0 +1,412 @@
+/* COLORES CORPORATIVOS AS PARAGUSAPP
+   - Primario (Verde Oscuro): #274002
+   - Secundario (Verde Medio): #7D8C07
+   - Acento (Verde Claro): #ADBF21
+   - Destacado (Naranja): #F27F1B
+   - Fondo (Gris Claro): #F2F2F2
+*/
+
+.mesas-container {
+  padding: 20px;
+}
+
+.mesas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.mesas-header h2 {
+  margin: 0;
+  color: #274002;
+}
+
+.mesas-header .btn-primary {
+  background: linear-gradient(135deg, #274002 0%, #7D8C07 100%);
+  border: none;
+}
+
+.mesas-header .btn-primary:hover {
+  background: linear-gradient(135deg, #3d5a08 0%, #9aa309 100%);
+}
+
+.mesas-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(39, 64, 2, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card .numero {
+  font-size: 2rem;
+  font-weight: bold;
+  display: block;
+}
+
+.stat-card .label {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.stat-card.libre .numero {
+  color: #274002;
+}
+
+.stat-card.libre {
+  border-left: 4px solid #ADBF21;
+}
+
+.stat-card.ocupada .numero {
+  color: #F27F1B;
+}
+
+.stat-card.ocupada {
+  border-left: 4px solid #F27F1B;
+}
+
+.stat-card.reservada .numero {
+  color: #7D8C07;
+}
+
+.stat-card.reservada {
+  border-left: 4px solid #7D8C07;
+}
+
+.mesas-map {
+  background: linear-gradient(135deg, #F2F2F2 0%, #e8e8e8 100%);
+  border-radius: 15px;
+  min-height: 500px;
+  padding: 20px;
+  position: relative;
+  border: 2px dashed #ADBF21;
+}
+
+.mesa-card {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(39, 64, 2, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  transition: all 0.3s ease;
+  border: 3px solid #7D8C07;
+  user-select: none;
+}
+
+.mesa-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(39, 64, 2, 0.2);
+}
+
+.mesa-card.dragging {
+  cursor: grabbing;
+  transform: scale(1.1);
+  box-shadow: 0 12px 35px rgba(39, 64, 2, 0.3);
+  z-index: 1000;
+}
+
+.mesa-card.libre {
+  border-color: #ADBF21;
+  background: linear-gradient(135deg, #f0f4e8 0%, #ffffff 100%);
+}
+
+.mesa-card.ocupada {
+  border-color: #F27F1B;
+  background: linear-gradient(135deg, #fff5eb 0%, #ffffff 100%);
+}
+
+.mesa-card.reservada {
+  border-color: #7D8C07;
+  background: linear-gradient(135deg, #f5f8eb 0%, #ffffff 100%);
+}
+
+.mesa-icon {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.mesa-numero {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #274002;
+}
+
+.mesa-estado {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+.mesa-estado.libre {
+  background: #ADBF21;
+  color: white;
+}
+
+.mesa-estado.ocupada {
+  background: #F27F1B;
+  color: white;
+}
+
+.mesa-estado.reservada {
+  background: #7D8C07;
+  color: white;
+}
+
+.mesa-total {
+  font-size: 0.85rem;
+  color: #274002;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.mesa-actions {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: none;
+}
+
+.mesa-card:hover .mesa-actions {
+  display: block;
+}
+
+.mesa-drag-hint {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  color: #7D8C07;
+  font-size: 0.6rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.mesa-card:hover .mesa-drag-hint {
+  opacity: 1;
+}
+
+/* MODAL STYLES */
+.modal-content {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-header.bg-primary {
+  background: linear-gradient(135deg, #274002 0%, #7D8C07 100%) !important;
+}
+
+.modal-header.bg-info {
+  background: linear-gradient(135deg, #7D8C07 0%, #ADBF21 100%) !important;
+}
+
+.modal-header.bg-success {
+  background: linear-gradient(135deg, #ADBF21 0%, #7D8C07 100%) !important;
+}
+
+.pedido-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ADBF21;
+}
+
+.pedido-total {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #274002;
+}
+
+.productos-lista {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.producto-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.producto-info {
+  flex: 1;
+}
+
+.producto-nombre {
+  font-weight: 600;
+  color: #274002;
+}
+
+.producto-cantidad {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.producto-subtotal {
+  font-weight: bold;
+  color: #274002;
+  margin: 0 15px;
+}
+
+.agregar-producto-section {
+  background: rgba(173, 191, 33, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.propina-section {
+  background: rgba(242, 127, 27, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.propina-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.propina-btn {
+  padding: 8px 16px;
+  border: 2px solid #F27F1B;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #F27F1B;
+  transition: all 0.2s ease;
+}
+
+.propina-btn:hover {
+  background: #F27F1B;
+  color: white;
+}
+
+.propina-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.propina-input input {
+  width: 120px;
+}
+
+.propina-monto {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #F27F1B;
+  margin-top: 10px;
+}
+
+.pago-resumen {
+  background: rgba(39, 64, 2, 0.05);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.pago-linea {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.pago-linea.total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-top: 2px solid #ADBF21;
+  padding-top: 10px;
+  margin-top: 10px;
+  color: #274002;
+}
+
+.pago-linea.propina {
+  color: #F27F1B;
+}
+
+.metodos-pago {
+  display: flex;
+  gap: 10px;
+}
+
+.metodo-pago-btn {
+  flex: 1;
+  padding: 15px;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.metodo-pago-btn:hover,
+.metodo-pago-btn.active {
+  border-color: #ADBF21;
+  background: rgba(173, 191, 33, 0.1);
+}
+
+.pago-efectivo-section {
+  background: rgba(173, 191, 33, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+}
+
+.vuelto-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.vuelto-monto {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #274002;
+}
+
+@media (max-width: 768px) {
+  .mesas-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .mesa-card {
+    width: 100px;
+    height: 100px;
+  }
+}
